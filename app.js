@@ -41,6 +41,17 @@ app.use(function(req, res, next){
   next();
 });
 
+app.use(function(req, res, next) {
+  if (req.session.user) {
+    if ((Date.now() - req.session.user.lastTransaction) > 2*60*1000) {
+      delete req.session.user;
+    } else {
+      req.session.user.lastTransaction = Date.now();
+    }
+  }
+  next();
+});
+
 
 app.use('/', routes);
 
